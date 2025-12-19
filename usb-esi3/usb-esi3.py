@@ -182,7 +182,7 @@ def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[st
         if meter_type == "electricity":
             if key == "power":
                 # Leistung: mW -> W (durch 1000)
-                converted[key] = round(value / 100, 1)
+                converted[key] = round(value / 100, 2)
             elif key in ["energy_import", "energy_export", "energy_import_nt", "energry_import", "energry_export"]:
                 # Energie: Wh -> kWh (durch 1000)
                 converted[key] = round(value / 10000, 2)
