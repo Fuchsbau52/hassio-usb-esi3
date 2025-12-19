@@ -15,3 +15,6 @@
 
 ## 1.0.7 (2024-12-19)
 - another try
+
+## 1.0.8 (2024-12-19)
+- fixing sensor names
