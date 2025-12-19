@@ -166,11 +166,23 @@ def parse_line(line: str) -> Optional[Tuple[int, str, Dict[str, float]]]:
 
 def make_mqtt_client(client_id: str) -> mqtt_client.Client:
     log.info("MQTT Client wird erstellt...")
-    client = mqtt_client.Client(
-        mqtt_client.CallbackAPIVersion.VERSION1, 
-        client_id=client_id, 
-        clean_session=True
-    )
+    
+    # Kompatibilität für paho-mqtt < 2.0 und >= 2.0
+    try:
+        # Versuche neue API (paho-mqtt >= 2.0)
+        client = mqtt_client.Client(
+            mqtt_client.CallbackAPIVersion.VERSION1, 
+            client_id=client_id, 
+            clean_session=True
+        )
+        log.debug("Nutze paho-mqtt >= 2.0 API")
+    except AttributeError:
+        # Fallback auf alte API (paho-mqtt < 2.0)
+        client = mqtt_client.Client(
+            client_id=client_id, 
+            clean_session=True
+        )
+        log.debug("Nutze paho-mqtt < 2.0 API")
     
     if MQTT_USER:
         log.info(f"MQTT Authentifizierung für Benutzer: {MQTT_USER}")
