@@ -111,11 +111,3 @@ Setze `log_level: "debug"` in der Konfiguration für maximale Details.
 | "USB-Gerät nicht gefunden" | USB-Port in Konfiguration anpassen |
 | "MQTT Verbindungsfehler" | Broker läuft? Zugangsdaten korrekt? |
 | "Permission denied" | Add-on neu starten |
-
-## Updates
-
-Um das Add-on zu aktualisieren:
-1. Ändere die Version in `config.yaml`
-2. Update `CHANGELOG.md`
-3. Pushe zu GitHub
-4. In Home Assistant auf "Update" klicken
