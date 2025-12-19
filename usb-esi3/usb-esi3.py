@@ -167,8 +167,10 @@ def parse_line(line: str) -> Optional[Tuple[int, str, Dict[str, float]]]:
 def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[str, float]:
     """
     Konvertiert und rundet Werte basierend auf dem Meter-Typ
-    - power: mW -> W (Faktor 1000) und auf 1 Dezimalstelle
-    - energy_import/export: Wh -> kWh (Faktor 1000) und auf 2 Dezimalstellen
+    
+    USB-ESI3 sendet:
+    - power: ÷ 100 für korrekte Watt-Werte
+    - energy_import/export: ÷ 10000 für korrekte kWh-Werte
     """
     converted = {}
     
@@ -189,7 +191,7 @@ def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[st
                 converted[key] = round(value, 2)
         elif meter_type == "gas":
             if key == "volume_import":
-                # Gas-Volumen: m³ (bereits korrekte Einheit, nur runden)
+                # Gas-Volumen: m³ (bereits korrekte Einheit)
                 converted[key] = round(value, 3)
             elif key == "momentary_use":
                 # Momentaner Verbrauch
@@ -287,9 +289,12 @@ def publish_discovery_for_keys(
 
         unique_id = f"{DEVICE_ID}_conn{conn_idx}_{key}"
         discovery_topic = f"homeassistant/sensor/{unique_id}/config"
+        
+        # Clean sensor names without device name duplication
+        key_display = key.replace("_", " ").replace("energry", "energy").title()
 
         payload = {
-            "name": f"{DEVICE_NAME} {meter_type} Kanal {conn_idx} {key}",
+            "name": f"{meter_type.title()} Channel {conn_idx} {key_display}",
             "unique_id": unique_id,
             "state_topic": state_topic,
             "value_template": f"{{{{ value_json.{key} }}}}",
