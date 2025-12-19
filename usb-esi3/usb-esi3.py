@@ -160,6 +160,37 @@ def parse_line(line: str) -> Optional[Tuple[int, str, Dict[str, float]]]:
 
     return (conn_idx, meter_type, data)
 
+def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[str, float]:
+    """
+    Konvertiert und rundet Werte basierend auf dem Meter-Typ
+    - power: Wh -> W (Faktor 10) und auf 2 Dezimalstellen
+    - energy_import/export: Wh -> kWh (Faktor 10000) und auf 2 Dezimalstellen
+    """
+    converted = {}
+    
+    for key, value in data.items():
+        if not isinstance(value, (int, float)):
+            converted[key] = value
+            continue
+            
+        if meter_type == "electricity":
+            if key == "power":
+                # Leistung: Wh -> W (Faktor 10)
+                converted[key] = round(value * 10, 2)
+            elif key in ["energy_import", "energy_export", "energy_import_nt"]:
+                # Energie: Wh -> kWh (geteilt durch 1000)
+                converted[key] = round(value / 1000, 2)
+            else:
+                # Andere Werte: 2 Dezimalstellen
+                converted[key] = round(value, 2)
+        elif meter_type == "gas":
+            # Gas-Werte: 3 Dezimalstellen (m³ sind oft präziser)
+            converted[key] = round(value, 3)
+        else:
+            converted[key] = round(value, 2)
+    
+    return converted
+
 # -------------------------
 # MQTT Client
 # -------------------------
@@ -362,6 +393,9 @@ def run_loop() -> None:
                 
                 if not data:
                     continue
+
+                # Werte konvertieren und runden
+                data = convert_and_round_values(meter_type, data)
 
                 log.debug(f"Connector {conn_idx} ({meter_type}): {data}")
 
