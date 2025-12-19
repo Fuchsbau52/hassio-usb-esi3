@@ -7,4 +7,5 @@
 - Konfigurierbare Parameter
 - Detailliertes Logging mit Zeitstempeln
 
-## 1.0.4 (2024-12-19)
+## 1.0.5 (2024-12-19)
+- value correction by factor 10 for W and 1000 for kwh
