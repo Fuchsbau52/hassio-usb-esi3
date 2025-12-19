@@ -18,3 +18,6 @@
 
 ## 1.0.8 (2024-12-19)
 - fixing sensor names
+
+## 1.0.9 (2024-12-19)
+- adding decimal places for actual consumtion
