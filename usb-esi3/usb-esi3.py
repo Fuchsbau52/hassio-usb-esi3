@@ -45,24 +45,28 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "info").upper()
 UNITS_ELECTRICITY = {
     "power": "W",
     "energy_import": "kWh",
+    "energry_import": "kWh",  # Tippfehler im USB-ESI3 Gerät
     "energy_export": "kWh",
+    "energry_export": "kWh",  # Tippfehler im USB-ESI3 Gerät
     "energy_import_nt": "kWh",
 }
 UNITS_GAS = {
     "volume_import": "m³",
-    "momentary_use": "m³",
+    "momentary_use": "m³/h",
 }
 
 HA_META = {
     "electricity": {
         "power": {"device_class": "power", "state_class": "measurement"},
         "energy_import": {"device_class": "energy", "state_class": "total_increasing"},
+        "energry_import": {"device_class": "energy", "state_class": "total_increasing"},  # Tippfehler
         "energy_export": {"device_class": "energy", "state_class": "total_increasing"},
+        "energry_export": {"device_class": "energy", "state_class": "total_increasing"},  # Tippfehler
         "energy_import_nt": {"device_class": "energy", "state_class": "total_increasing"},
     },
     "gas": {
-        "volume_import": {"state_class": "total_increasing"},
-        "momentary_use": {"state_class": "measurement"},
+        "volume_import": {"device_class": "gas", "state_class": "total_increasing"},
+        "momentary_use": {"device_class": "gas", "state_class": "measurement"},
     },
 }
 
@@ -163,8 +167,8 @@ def parse_line(line: str) -> Optional[Tuple[int, str, Dict[str, float]]]:
 def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[str, float]:
     """
     Konvertiert und rundet Werte basierend auf dem Meter-Typ
-    - power: Wh -> W (Faktor 10) und auf 2 Dezimalstellen
-    - energy_import/export: Wh -> kWh (Faktor 10000) und auf 2 Dezimalstellen
+    - power: mW -> W (Faktor 1000) und auf 1 Dezimalstelle
+    - energy_import/export: Wh -> kWh (Faktor 1000) und auf 2 Dezimalstellen
     """
     converted = {}
     
@@ -175,17 +179,23 @@ def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[st
             
         if meter_type == "electricity":
             if key == "power":
-                # Leistung: Wh -> W (Faktor 10)
-                converted[key] = round(value * 10, 2)
-            elif key in ["energy_import", "energy_export", "energy_import_nt"]:
-                # Energie: Wh -> kWh (geteilt durch 1000)
+                # Leistung: mW -> W (durch 1000)
+                converted[key] = round(value / 1000, 1)
+            elif key in ["energy_import", "energy_export", "energy_import_nt", "energry_import", "energry_export"]:
+                # Energie: Wh -> kWh (durch 1000)
                 converted[key] = round(value / 1000, 2)
             else:
                 # Andere Werte: 2 Dezimalstellen
                 converted[key] = round(value, 2)
         elif meter_type == "gas":
-            # Gas-Werte: 3 Dezimalstellen (m³ sind oft präziser)
-            converted[key] = round(value, 3)
+            if key == "volume_import":
+                # Gas-Volumen: m³ (bereits korrekte Einheit, nur runden)
+                converted[key] = round(value, 3)
+            elif key == "momentary_use":
+                # Momentaner Verbrauch
+                converted[key] = round(value, 3)
+            else:
+                converted[key] = round(value, 3)
         else:
             converted[key] = round(value, 2)
     
