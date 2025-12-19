@@ -1,6 +1,8 @@
 # Home Assistant Add-on: USB-ESI3 zu MQTT
 
-Dieses Add-on liest Daten vom USB-ESI3 Energiemessgerät und publiziert sie via MQTT zu Home Assistant.
+Dieses Add-on liest Daten per USB verbundenen USB-ESI3 von ELV und publiziert die Messwerte der drei Sensoren via MQTT zu Home Assistant.
+
+Vorteil dabei ist, dass kein seperater PI benötigt wird und der USB-ESI3 direkt an den PI mit HAOS betrieben werden kann. Voraussetzung dafür ist dann natürlich, dass sich der HAOS in der Nähe der auszuwertenden Zähler befindet, z.B. aud der Hutschiene.
 
 ## Installation
 
