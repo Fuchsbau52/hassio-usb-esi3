@@ -1,5 +1,5 @@
 name: USB-ESI3 zu MQTT
-version: "1.0.1"
+version: "1.0.2"
 slug: usb-esi3
 description: Liest USB-ESI3 Energiemessdaten und publiziert sie via MQTT zu Home Assistant
 arch:
@@ -51,4 +51,4 @@ devices:
 # Logging nach stdout/stderr
 stdout: true
 
-image: ghcr.io/{arch}-addon-usb-esi3
+# image: ghcr.io/{arch}-addon-usb-esi3
