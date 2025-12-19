@@ -48,7 +48,7 @@ Bei Problemen öffne bitte ein Issue auf GitHub.
 2. Gehe zu **Einstellungen** → **Add-ons** → **Add-on Store**
 3. Klicke auf die **drei Punkte** oben rechts
 4. Wähle **Repositories**
-5. Füge deine Repository-URL hinzu: `https://github.com/DEIN-USERNAME/hassio-usb-esi3`
+5. Füge deine Repository-URL hinzu: `https://github.com/Fuchsbau52/hassio-usb-esi3`
 6. Klicke auf **Hinzufügen**
 
 ### Schritt 6: Add-on konfigurieren und starten
