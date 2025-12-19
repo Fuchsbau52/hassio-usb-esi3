@@ -1,7 +1,8 @@
 name: USB-ESI3 zu MQTT
-version: "1.0.2"
+version: "1.0.3"
 slug: usb-esi3
 description: Liest USB-ESI3 Energiemessdaten und publiziert sie via MQTT zu Home Assistant
+url: https://github.com/Fuchsbau52/hassio-usb-esi3
 arch:
   - aarch64
   - amd64
@@ -35,20 +36,15 @@ schema:
   base_topic: str
   log_level: list(debug|info|warning|error)
 
-ports: {}
-
 # USB Gerät Zugriff
 devices:
   - /dev/ttyUSB0
   - /dev/ttyUSB1
   - /dev/ttyUSB2
   - /dev/ttyACM0
+  - /dev/serial/by-id
 
-# Kernel Module falls nötig
-#modules:
-#  - ftdi_sio
-
-# Logging nach stdout/stderr
-stdout: true
-
-# image: ghcr.io/{arch}-addon-usb-esi3
+# Logging
+map:
+  - type: addon_config
+    read_only: false
