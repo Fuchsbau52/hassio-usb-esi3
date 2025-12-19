@@ -36,7 +36,6 @@ log_level: "info"
 ## Support
 
 Bei Problemen öffne bitte ein Issue auf GitHub.
-```
 
 ### Schritt 4: Dateien auf GitHub hochladen
 
