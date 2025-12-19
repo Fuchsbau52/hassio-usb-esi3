@@ -7,6 +7,8 @@ ENV LANG C.UTF-8
 RUN apk add --no-cache \
     python3 \
     py3-pip \
+    jq \
+    bash \
     && pip3 install --no-cache-dir --break-system-packages \
     pyserial \
     paho-mqtt
@@ -23,13 +25,3 @@ COPY requirements.txt /app/
 RUN chmod a+x /app/run.sh
 
 CMD [ "/app/run.sh" ]
-```
-
-#### 3.3 `usb-esi3/build.yaml`
-
-```yaml
-build_from:
-  aarch64: ghcr.io/home-assistant/aarch64-base:3.19
-  amd64: ghcr.io/home-assistant/amd64-base:3.19
-  armv7: ghcr.io/home-assistant/armv7-base:3.19
-  armhf: ghcr.io/home-assistant/armhf-base:3.19
