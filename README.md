@@ -30,6 +30,12 @@ Zählt Impulse von S0-Schnittstellen
 - ✅ Gas und Strom
 - ✅ Beliebige Impulswerte
 
+### ES-GAS-2
+Zählt Impulse von der Schnittstelle
+- ⚙️ Offset für Startstand konfigurierbar
+- ✅ Gas und Strom
+- ✅ Beliebige Impulswerte
+
 ## Installation
 
 1. Füge dieses Repository zu deinen Home Assistant Add-on Repositories hinzu:
