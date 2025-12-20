@@ -21,3 +21,6 @@
 
 ## 1.0.9 (2024-12-19)
 - adding decimal places for actual consumtion
+
+## 1.1.0 (2024-12-19)
+- adding starting values for gas and electricity
