@@ -76,14 +76,14 @@ log_level: "info"
 # ES-IEC (SML) Sensoren brauchen keinen Offset!
 channel_1_import_offset: 0.0      # Kanal 1: Strom SML → kein Offset
 channel_1_export_offset: 0.0
-channel_2_import_offset: 3540.0   # Kanal 2: Gas S0 → Zählerstand
+channel_2_import_offset: 3540.0   # Kanal 2: Gas → Zählerstand
 channel_3_import_offset: 0.0      # Kanal 3: nicht verwendet
 channel_3_export_offset: 0.0
 ```
 
 ### Offset-Beispiele
 
-**Szenario 1: SML + Gas S0**
+**Szenario 1: SML + Gas**
 ```yaml
 channel_1_import_offset: 0.0      # ES-IEC (SML) an Kanal 1
 channel_1_export_offset: 0.0
