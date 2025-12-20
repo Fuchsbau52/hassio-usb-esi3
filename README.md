@@ -87,20 +87,20 @@ channel_3_export_offset: 0.0
 ```yaml
 channel_1_import_offset: 0.0      # ES-IEC (SML) an Kanal 1
 channel_1_export_offset: 0.0
-channel_2_import_offset: 3542.5   # Gas ES-LED an Kanal 2
+channel_2_import_offset: 3542.5   # Gas ES-GAS-2 an Kanal 2
 ```
 
 **Szenario 2: Alle S0 Sensoren**
 ```yaml
 channel_1_import_offset: 4837.0   # Strom ES-LED an Kanal 1
 channel_1_export_offset: 303.0
-channel_2_import_offset: 3542.0   # Gas ES-LED an Kanal 2
+channel_2_import_offset: 3542.0   # Gas ES-GAS-2 an Kanal 2
 channel_3_import_offset: 1234.0   # Weiterer ES-LED an Kanal 3
 ```
 
 **Szenario 3: Beliebige Reihenfolge**
 ```yaml
-channel_1_import_offset: 3542.0   # Gas S0 an Kanal 1
+channel_1_import_offset: 3542.0   # Gas an Kanal 1
 channel_2_import_offset: 0.0      # SML an Kanal 2 → kein Offset!
 channel_3_import_offset: 4837.0   # Strom S0 an Kanal 3
 ```
