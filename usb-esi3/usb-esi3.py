@@ -42,10 +42,20 @@ RETAIN_DISCOVERY = True
 # Log Level
 LOG_LEVEL = os.getenv("LOG_LEVEL", "info").upper()
 
-# Offsets für Startwerte
-GAS_VOLUME_OFFSET = float(os.getenv("GAS_VOLUME_OFFSET", "0.0"))
-ELECTRICITY_IMPORT_OFFSET = float(os.getenv("ELECTRICITY_IMPORT_OFFSET", "0.0"))
-ELECTRICITY_EXPORT_OFFSET = float(os.getenv("ELECTRICITY_EXPORT_OFFSET", "0.0"))
+# Offsets pro Kanal
+CHANNEL_OFFSETS = {
+    1: {
+        "import": float(os.getenv("CHANNEL_1_IMPORT_OFFSET", "0.0")),
+        "export": float(os.getenv("CHANNEL_1_EXPORT_OFFSET", "0.0")),
+    },
+    2: {
+        "import": float(os.getenv("CHANNEL_2_IMPORT_OFFSET", "0.0")),
+    },
+    3: {
+        "import": float(os.getenv("CHANNEL_3_IMPORT_OFFSET", "0.0")),
+        "export": float(os.getenv("CHANNEL_3_EXPORT_OFFSET", "0.0")),
+    },
+}
 
 UNITS_ELECTRICITY = {
     "power": "W",
@@ -169,16 +179,19 @@ def parse_line(line: str) -> Optional[Tuple[int, str, Dict[str, float]]]:
 
     return (conn_idx, meter_type, data)
 
-def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[str, float]:
+def convert_and_round_values(meter_type: str, conn_idx: int, data: Dict[str, float]) -> Dict[str, float]:
     """
     Konvertiert und rundet Werte basierend auf dem Meter-Typ
     
     USB-ESI3 sendet:
     - power: ÷ 100 für korrekte Watt-Werte
     - energy_import/export: ÷ 10000 für korrekte kWh-Werte
-    - Fügt konfigurierte Offsets hinzu
+    - Fügt kanal-spezifische Offsets hinzu
     """
     converted = {}
+    
+    # Hole Offsets für diesen Kanal
+    channel_offset = CHANNEL_OFFSETS.get(conn_idx, {})
     
     for key, value in data.items():
         if not isinstance(value, (int, float)):
@@ -187,16 +200,18 @@ def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[st
             
         if meter_type == "electricity":
             if key == "power":
-                # Leistung: mW -> W (durch 1000)
+                # Leistung: mW -> W (durch 100)
                 converted[key] = round(value / 100, 1)
             elif key in ["energy_import", "energry_import"]:
-                # Energie Import: Wh -> kWh (durch 1000) + Offset
-                converted[key] = round(value / 10000 + ELECTRICITY_IMPORT_OFFSET, 2)
+                # Energie Import: Wh -> kWh (durch 10000) + Offset
+                offset = channel_offset.get("import", 0.0)
+                converted[key] = round(value / 10000 + offset, 2)
             elif key in ["energy_export", "energry_export"]:
-                # Energie Export: Wh -> kWh (durch 1000) + Offset
-                converted[key] = round(value / 10000 + ELECTRICITY_EXPORT_OFFSET, 2)
+                # Energie Export: Wh -> kWh (durch 10000) + Offset
+                offset = channel_offset.get("export", 0.0)
+                converted[key] = round(value / 10000 + offset, 2)
             elif key == "energy_import_nt":
-                # Energie Niedertarif: Wh -> kWh (durch 1000)
+                # Energie Niedertarif: Wh -> kWh (durch 10000)
                 converted[key] = round(value / 10000, 2)
             else:
                 # Andere Werte: 2 Dezimalstellen
@@ -204,7 +219,8 @@ def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[st
         elif meter_type == "gas":
             if key == "volume_import":
                 # Gas-Volumen: m³ + Offset
-                converted[key] = round(value + GAS_VOLUME_OFFSET, 3)
+                offset = channel_offset.get("import", 0.0)
+                converted[key] = round(value + offset, 3)
             elif key == "momentary_use":
                 # Momentaner Verbrauch (kein Offset)
                 converted[key] = round(value, 3)
@@ -374,10 +390,14 @@ def run_loop() -> None:
     log.info(f"  Base Topic: {BASE_TOPIC}")
     log.info(f"  Device Name: {DEVICE_NAME}")
     log.info(f"  Log Level: {LOG_LEVEL}")
-    log.info(f"Offsets:")
-    log.info(f"  Gas Volume: +{GAS_VOLUME_OFFSET} m³")
-    log.info(f"  Electricity Import: +{ELECTRICITY_IMPORT_OFFSET} kWh")
-    log.info(f"  Electricity Export: +{ELECTRICITY_EXPORT_OFFSET} kWh")
+    log.info(f"Offsets (pro Kanal):")
+    for channel, offsets in CHANNEL_OFFSETS.items():
+        if any(v != 0.0 for v in offsets.values()):
+            log.info(f"  Kanal {channel}:")
+            if "import" in offsets and offsets["import"] != 0.0:
+                log.info(f"    Import: +{offsets['import']} (kWh/m³)")
+            if "export" in offsets and offsets["export"] != 0.0:
+                log.info(f"    Export: +{offsets['export']} kWh")
     log.info("=" * 60)
     
     client = make_mqtt_client(client_id=f"{DEVICE_ID}_publisher")
@@ -425,8 +445,8 @@ def run_loop() -> None:
                 if not data:
                     continue
 
-                # Werte konvertieren und runden
-                data = convert_and_round_values(meter_type, data)
+                # Werte konvertieren und runden (mit Kanal-Index für Offsets)
+                data = convert_and_round_values(meter_type, conn_idx, data)
 
                 log.debug(f"Connector {conn_idx} ({meter_type}): {data}")
 
