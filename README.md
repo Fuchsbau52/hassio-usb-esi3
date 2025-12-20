@@ -10,7 +10,7 @@ Liest Energiemessdaten vom USB-ESI3 Gerät und publiziert sie via MQTT zu Home A
 ## Features
 
 ✨ **Automatische Sensor-Erkennung** - Home Assistant Discovery für alle Sensoren  
-⚡ **Strom & Gas** - Unterstützt ES-IEC (SML) und ES-LED (S0) Sensoren  
+⚡ **Strom & Gas** - Unterstützt ES-IEC (SML), ES-LED (S0) und ES-GAS-2 Sensoren  
 🔧 **Kanal-spezifische Offsets** - Individuelle Startwerte für jeden Kanal  
 📊 **Energie Dashboard** - Optimiert für das HA Energie Dashboard  
 📝 **Detailliertes Logging** - Zeitstempel, Statistiken, Debug-Modus  
