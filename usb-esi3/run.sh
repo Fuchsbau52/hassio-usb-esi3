@@ -15,6 +15,11 @@ export DEVICE_NAME=$(jq --raw-output '.device_name // "USB-ESI3"' $CONFIG_PATH)
 export BASE_TOPIC=$(jq --raw-output '.base_topic // "sensors/usb-esi3"' $CONFIG_PATH)
 export LOG_LEVEL=$(jq --raw-output '.log_level // "info"' $CONFIG_PATH)
 
+# Offsets
+export GAS_VOLUME_OFFSET=$(jq --raw-output '.gas_volume_offset // 0.0' $CONFIG_PATH)
+export ELECTRICITY_IMPORT_OFFSET=$(jq --raw-output '.electricity_import_offset // 0.0' $CONFIG_PATH)
+export ELECTRICITY_EXPORT_OFFSET=$(jq --raw-output '.electricity_export_offset // 0.0' $CONFIG_PATH)
+
 # Logging
 echo "=========================================="
 echo "USB-ESI3 zu MQTT Add-on wird gestartet..."
@@ -25,6 +30,10 @@ echo "MQTT Broker: ${MQTT_HOST}:${MQTT_PORT}"
 echo "MQTT Benutzer: ${MQTT_USER}"
 echo "Base Topic: ${BASE_TOPIC}"
 echo "Log Level: ${LOG_LEVEL}"
+echo "Offsets:"
+echo "  Gas Volume: +${GAS_VOLUME_OFFSET} m³"
+echo "  Electricity Import: +${ELECTRICITY_IMPORT_OFFSET} kWh"
+echo "  Electricity Export: +${ELECTRICITY_EXPORT_OFFSET} kWh"
 echo "=========================================="
 
 # Prüfe ob USB-Gerät existiert
