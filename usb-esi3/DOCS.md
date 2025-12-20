@@ -4,8 +4,8 @@
 
 Dieses Add-on liest Energiemessdaten vom USB-ESI3 Gerät und publiziert sie via MQTT zu Home Assistant. Es unterstützt:
 - **Strom-Sensoren** (ES-IEC mit SML, ES-LED mit S0)
-- **Gas-Sensoren** (ES-LED mit S0)
-- **Bis zu 3 Kanäle** gleichzeitig
+- **Gas-Sensoren** (ES-GAS-2)
+- **Bis zu 3 Kanäle** gleichzeitig, 2 x Strom + 1 x Gas
 - **Automatische Home Assistant Discovery**
 - **Kanal-spezifische Offsets** für S0-Sensoren
 
@@ -54,10 +54,10 @@ Diese zählen nur **Impulse** und starten bei 0.
 Die Offsets werden **pro Kanal** konfiguriert. Egal welcher Sensor an welchem Kanal steckt!
 
 ```yaml
-# Beispiel 1: Kanal 1 = SML, Kanal 2 = Gas S0, Kanal 3 = Strom S0
+# Beispiel 1: Kanal 1 = SML, Kanal 2 = Gas, Kanal 3 = Strom S0
 channel_1_import_offset: 0.0      # ES-IEC (SML) → kein Offset
 channel_1_export_offset: 0.0      # ES-IEC (SML) → kein Offset
-channel_2_import_offset: 3540.0   # Gas ES-LED → Zählerstand
+channel_2_import_offset: 3540.0   # Gas ES-GAS-2 → Zählerstand
 channel_3_import_offset: 4837.0   # Strom ES-LED → Zählerstand
 channel_3_export_offset: 303.0    # Strom ES-LED → Einspeisung
 
@@ -66,7 +66,7 @@ channel_1_import_offset: 4837.0   # Strom S0 an Kanal 1
 channel_1_export_offset: 303.0
 channel_2_import_offset: 0.0      # SML an Kanal 2 → kein Offset
 channel_2_export_offset: 0.0
-channel_3_import_offset: 3540.0   # Gas S0 an Kanal 3
+channel_3_import_offset: 3540.0   # Gas an Kanal 3
 ```
 
 ### Offset berechnen
