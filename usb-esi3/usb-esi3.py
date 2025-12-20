@@ -42,6 +42,11 @@ RETAIN_DISCOVERY = True
 # Log Level
 LOG_LEVEL = os.getenv("LOG_LEVEL", "info").upper()
 
+# Offsets für Startwerte
+GAS_VOLUME_OFFSET = float(os.getenv("GAS_VOLUME_OFFSET", "0.0"))
+ELECTRICITY_IMPORT_OFFSET = float(os.getenv("ELECTRICITY_IMPORT_OFFSET", "0.0"))
+ELECTRICITY_EXPORT_OFFSET = float(os.getenv("ELECTRICITY_EXPORT_OFFSET", "0.0"))
+
 UNITS_ELECTRICITY = {
     "power": "W",
     "energy_import": "kWh",
@@ -171,6 +176,7 @@ def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[st
     USB-ESI3 sendet:
     - power: ÷ 100 für korrekte Watt-Werte
     - energy_import/export: ÷ 10000 für korrekte kWh-Werte
+    - Fügt konfigurierte Offsets hinzu
     """
     converted = {}
     
@@ -182,19 +188,25 @@ def convert_and_round_values(meter_type: str, data: Dict[str, float]) -> Dict[st
         if meter_type == "electricity":
             if key == "power":
                 # Leistung: mW -> W (durch 1000)
-                converted[key] = round(value / 100, 2)
-            elif key in ["energy_import", "energy_export", "energy_import_nt", "energry_import", "energry_export"]:
-                # Energie: Wh -> kWh (durch 1000)
+                converted[key] = round(value / 100, 1)
+            elif key in ["energy_import", "energry_import"]:
+                # Energie Import: Wh -> kWh (durch 1000) + Offset
+                converted[key] = round(value / 10000 + ELECTRICITY_IMPORT_OFFSET, 2)
+            elif key in ["energy_export", "energry_export"]:
+                # Energie Export: Wh -> kWh (durch 1000) + Offset
+                converted[key] = round(value / 10000 + ELECTRICITY_EXPORT_OFFSET, 2)
+            elif key == "energy_import_nt":
+                # Energie Niedertarif: Wh -> kWh (durch 1000)
                 converted[key] = round(value / 10000, 2)
             else:
                 # Andere Werte: 2 Dezimalstellen
                 converted[key] = round(value, 2)
         elif meter_type == "gas":
             if key == "volume_import":
-                # Gas-Volumen: m³ (bereits korrekte Einheit)
-                converted[key] = round(value, 3)
+                # Gas-Volumen: m³ + Offset
+                converted[key] = round(value + GAS_VOLUME_OFFSET, 3)
             elif key == "momentary_use":
-                # Momentaner Verbrauch
+                # Momentaner Verbrauch (kein Offset)
                 converted[key] = round(value, 3)
             else:
                 converted[key] = round(value, 3)
@@ -362,6 +374,10 @@ def run_loop() -> None:
     log.info(f"  Base Topic: {BASE_TOPIC}")
     log.info(f"  Device Name: {DEVICE_NAME}")
     log.info(f"  Log Level: {LOG_LEVEL}")
+    log.info(f"Offsets:")
+    log.info(f"  Gas Volume: +{GAS_VOLUME_OFFSET} m³")
+    log.info(f"  Electricity Import: +{ELECTRICITY_IMPORT_OFFSET} kWh")
+    log.info(f"  Electricity Export: +{ELECTRICITY_EXPORT_OFFSET} kWh")
     log.info("=" * 60)
     
     client = make_mqtt_client(client_id=f"{DEVICE_ID}_publisher")
