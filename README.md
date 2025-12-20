@@ -72,7 +72,7 @@ device_name: "USB-ESI3"
 base_topic: "sensors/usb-esi3"
 log_level: "info"
 
-# Offsets für S0-Sensoren (ES-LED)
+# Offsets für S0-Sensoren (ES-LED und ES-GAS-2)
 # ES-IEC (SML) Sensoren brauchen keinen Offset!
 channel_1_import_offset: 0.0      # Kanal 1: Strom SML → kein Offset
 channel_1_export_offset: 0.0
