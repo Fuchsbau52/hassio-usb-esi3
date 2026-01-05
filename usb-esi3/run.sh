@@ -19,6 +19,7 @@ export LOG_LEVEL=$(jq --raw-output '.log_level // "info"' $CONFIG_PATH)
 export CHANNEL_1_IMPORT_OFFSET=$(jq --raw-output '.channel_1_import_offset // 0.0' $CONFIG_PATH)
 export CHANNEL_1_EXPORT_OFFSET=$(jq --raw-output '.channel_1_export_offset // 0.0' $CONFIG_PATH)
 export CHANNEL_2_IMPORT_OFFSET=$(jq --raw-output '.channel_2_import_offset // 0.0' $CONFIG_PATH)
+export CHANNEL_2_EXPORT_OFFSET=$(jq --raw-output '.channel_3_export_offset // 0.0' $CONFIG_PATH)
 export CHANNEL_3_IMPORT_OFFSET=$(jq --raw-output '.channel_3_import_offset // 0.0' $CONFIG_PATH)
 export CHANNEL_3_EXPORT_OFFSET=$(jq --raw-output '.channel_3_export_offset // 0.0' $CONFIG_PATH)
 
@@ -34,7 +35,7 @@ echo "Base Topic: ${BASE_TOPIC}"
 echo "Log Level: ${LOG_LEVEL}"
 echo "Offsets (pro Kanal):"
 echo "  Kanal 1: Import +${CHANNEL_1_IMPORT_OFFSET}, Export +${CHANNEL_1_EXPORT_OFFSET}"
-echo "  Kanal 2: Import +${CHANNEL_2_IMPORT_OFFSET}"
+echo "  Kanal 2: Import +${CHANNEL_2_IMPORT_OFFSET}, Export +${CHANNEL_2_EXPORT_OFFSET}"
 echo "  Kanal 3: Import +${CHANNEL_3_IMPORT_OFFSET}, Export +${CHANNEL_3_EXPORT_OFFSET}"
 echo "=========================================="
 
