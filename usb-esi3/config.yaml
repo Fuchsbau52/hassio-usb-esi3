@@ -28,6 +28,7 @@ options:
   channel_1_import_offset: 0.0
   channel_1_export_offset: 0.0
   channel_2_import_offset: 0.0
+  channel_2_export_offset: 0.0
   channel_3_import_offset: 0.0
   channel_3_export_offset: 0.0
 
@@ -44,6 +45,7 @@ schema:
   channel_1_import_offset: float
   channel_1_export_offset: float
   channel_2_import_offset: float
+  channel_2_export_offset: float
   channel_3_import_offset: float
   channel_3_export_offset: float
 
