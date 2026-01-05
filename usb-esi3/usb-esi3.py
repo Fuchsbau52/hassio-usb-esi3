@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 USB-ESI3 -> MQTT Publisher für Home Assistant Add-on
 Mit Umgebungsvariablen-Konfiguration und verbessertem Logging
@@ -50,6 +48,7 @@ CHANNEL_OFFSETS = {
     },
     2: {
         "import": float(os.getenv("CHANNEL_2_IMPORT_OFFSET", "0.0")),
+        "export": float(os.getenv("CHANNEL_2_EXPORT_OFFSET", "0.0")),
     },
     3: {
         "import": float(os.getenv("CHANNEL_3_IMPORT_OFFSET", "0.0")),
